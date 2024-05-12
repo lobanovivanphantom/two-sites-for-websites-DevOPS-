@@ -1,0 +1,32 @@
+server {
+  listen   80;
+  server_name site-2.ru www.site-2.ru;
+  access_log /var/www/site-2.ru/log/nginx/access.log;
+  error_log /var/www/site-2.ru/log/nginx/error.log;
+  
+  location /tinyfilemanager/ {
+    alias /var/www/site-2.ru/tinyfilemanager/;
+    index tinyfilemanager.php;
+  }
+
+  location ~ /\.(svn|git|hg) {
+    deny all;
+  }
+ 
+  location ~* ^.+\.(css|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|xls|pdf|ppt|txt|tar|mid|midi|wav|bmp|rtf|js|swf)$ {
+    root /var/www/site-2.ru/data;
+    expires max;
+    access_log   off;
+  }
+ 
+  location ~ \.php$ {
+    root /var/www/site-2.ru/data;
+    index index.php;
+    include fastcgi_params;
+    fastcgi_index index.php;     
+    fastcgi_pass unix:/etc/alternatives/php-fpm.sock;    
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+  }    
+  
+            
+}

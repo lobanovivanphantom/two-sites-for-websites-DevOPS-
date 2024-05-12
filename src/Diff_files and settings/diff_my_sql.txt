@@ -1,0 +1,33 @@
+--- my.cnf	2024-05-11 07:36:37.149236079 +0700
++++ /etc/mysql/my.cnf	2024-05-08 01:37:12.412039785 +0700
+@@ -19,3 +19,29 @@
+ 
+ !includedir /etc/mysql/conf.d/
+ !includedir /etc/mysql/mysql.conf.d/
++
++
++
++[mysqld]
++character-set-server = utf8
++collation-server = utf8_unicode_ci
++
++
++bind-address = 0.0.0.0
++
++
++max_allowed_packet  = 32M
++thread_stack        = 512K
++thread_cache_size   = 20
++open_files_limit    = 8192
++max_connections     = 100
++#query_cache_limit   = 4M
++#query_cache_size    = 32M
++
++
++tmp_table_size = 50M
++max_heap_table_size = 50M
++
++
++innodb_file_per_table
++innodb_buffer_pool_size = 2GB
+

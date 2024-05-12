@@ -1,0 +1,60 @@
+/var/www/
+├── html
+│   ├── index.html
+│   └── index.nginx-debian.html
+├── site-2.ru
+│   ├── data
+│   │   └── index.php
+│   ├── log
+│   │   └── nginx
+│   │       ├── access.log
+│   │       └── error.log
+│   ├── sess
+│   ├── tmp
+│   └── upload
+└── site.ru
+    ├── data
+    │   ├── bitrixsetup.update
+    │   └── index.php
+    ├── log
+    │   ├── apache2
+    │   │   ├── access.log
+    │   │   └── error.log
+    │   └── nginx
+    │       ├── access.log
+    │       └── error.log
+    ├── sess
+    ├── tmp
+    └── upload
+
+16 directories, 11 files
+
+
+/var/www/site.ru
+├── data
+│   ├── bitrixsetup.update
+│   └── index.php
+├── log
+│   ├── apache2
+│   │   ├── access.log
+│   │   └── error.log
+│   └── nginx
+│       ├── access.log
+│       └── error.log
+├── sess
+├── tmp
+└── upload
+7 directories, 6 files
+
+
+/var/www/site-2.ru/
+├── data
+│   └── index.php
+├── log
+│   └── nginx
+│       ├── access.log
+│       └── error.log
+├── sess
+├── tmp
+└── upload
+6 directories, 3 files

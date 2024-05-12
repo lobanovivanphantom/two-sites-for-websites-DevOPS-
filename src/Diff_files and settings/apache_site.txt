@@ -1,0 +1,24 @@
+<VirtualHost *:81>
+  ServerAdmin webmaster@site.ru
+  DocumentRoot /var/www/site.ru/data
+  ServerName site.ru
+  ServerAlias www.site.ru
+ 
+  AssignUserId site.ru site.ru
+ 
+  php_admin_value session.save_path "/var/www/site.ru/sess"
+  php_admin_value upload_tmp_dir "/var/www/site.ru/upload"
+  php_admin_value open_basedir "/var/www/site.ru:."
+ 
+  CustomLog /var/www/site.ru/log/apache2/access.log combined
+  ErrorLog /var/www/site.ru/log/apache2/error.log
+  LogLevel error
+ 
+  <Directory "/var/www/site.ru/data">
+    AllowOverride  All
+    Options FollowSymLinks
+    Order allow,deny
+    Allow from all
+        </Directory>
+</VirtualHost>
+

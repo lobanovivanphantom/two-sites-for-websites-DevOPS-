@@ -1,0 +1,117 @@
+--- php.ini	2024-05-11 07:41:33.115447861 +0700
++++ /etc/php/8.1/apache2/php.ini	2024-05-10 23:18:53.394964964 +0700
+@@ -195,7 +195,7 @@
+ ; Development Value: Off
+ ; Production Value: Off
+ ; https://php.net/short-open-tag
+-short_open_tag = Off
++short_open_tag = On
+ 
+ ; The number of significant digits displayed in floating point numbers.
+ ; https://php.net/precision
+@@ -425,6 +425,11 @@
+ ; How many GET/POST/COOKIE input variables may be accepted
+ ;max_input_vars = 1000
+ 
++; How many multipart body parts (combined input variable and file uploads) may
++; be accepted.
++; Default Value: -1 (Sum of max_input_vars and max_file_uploads)
++;max_multipart_body_parts = 1500
++
+ ; Maximum amount of memory a script may consume
+ ; https://php.net/memory-limit
+ memory_limit = 128M
+@@ -695,7 +700,7 @@
+ ; Its value may be 0 to disable the limit. It is ignored if POST data reading
+ ; is disabled through enable_post_data_reading.
+ ; https://php.net/post-max-size
+-post_max_size = 8M
++post_max_size = 128M
+ 
+ ; Automatically add files before PHP document.
+ ; https://php.net/auto-prepend-file
+@@ -847,7 +852,7 @@
+ 
+ ; Maximum allowed size for uploaded files.
+ ; https://php.net/upload-max-filesize
+-upload_max_filesize = 2M
++upload_max_filesize = 64M
+ 
+ ; Maximum number of files that can be uploaded via a single request
+ max_file_uploads = 20
+@@ -915,6 +920,12 @@
+ ;   Be sure to appropriately set the extension_dir directive.
+ ;
+ ;extension=bz2
++
++; The ldap extension must be before curl if OpenSSL 1.0.2 and OpenLDAP is used
++; otherwise it results in segfault when unloading after using SASL.
++; See https://github.com/php/php-src/issues/8620 for more info.
++;extension=ldap
++
+ ;extension=curl
+ ;extension=ffi
+ ;extension=ftp
+@@ -924,7 +935,6 @@
+ ;extension=gmp
+ ;extension=intl
+ ;extension=imap
+-;extension=ldap
+ ;extension=mbstring
+ ;extension=exif      ; Must be after mbstring as it depends on it
+ ;extension=mysqli
+@@ -965,7 +975,7 @@
+ [Date]
+ ; Defines the default timezone used by the date functions
+ ; https://php.net/date.timezone
+-;date.timezone =
++date.timezone = Europe/Moscow
+ 
+ ; https://php.net/date.default-latitude
+ ;date.default_latitude = 31.7667
+@@ -1419,7 +1429,12 @@
+ ; Development Value: 1
+ ; Production Value: 1
+ ; https://php.net/session.gc-probability
+-session.gc_probability = 0
++; Debian Default Value: 0
++; This is disabled in the Debian packages due to the strict permissions
++; on /var/lib/php. Instead, GC is performed through /etc/cron.d/php,
++; which uses the session.gc_maxlifetime setting. Please, check
++; /usr/share/doc/php8.2-common/README.Debian.gz for further reference.
++session.gc_probability = 10
+ 
+ ; Defines the probability that the 'garbage collection' process is started on every
+ ; session initialization. The probability is calculated by using gc_probability/gc_divisor,
+@@ -1429,12 +1444,12 @@
+ ; Development Value: 1000
+ ; Production Value: 1000
+ ; https://php.net/session.gc-divisor
+-session.gc_divisor = 1000
++session.gc_divisor = 100
+ 
+ ; After this number of seconds, stored data will be seen as 'garbage' and
+ ; cleaned up by the garbage collection process.
+ ; https://php.net/session.gc-maxlifetime
+-session.gc_maxlifetime = 1440
++session.gc_maxlifetime = 14400
+ 
+ ; NOTE: If you are using the subdirectory option for storing session files
+ ;       (see session.save_path above), then garbage collection does *not*
+@@ -1885,8 +1900,13 @@
+ ;opcache.file_cache_fallback=1
+ 
+ ; Enables or disables copying of PHP code (text segment) into HUGE PAGES.
+-; This should improve performance, but requires appropriate OS configuration.
+-;opcache.huge_code_pages=1
++; Under certain circumstances (if only a single global PHP process is
++; started from which all others fork), this can increase performance
++; by a tiny amount because TLB misses are reduced.  On the other hand, this
++; delays PHP startup, increases memory usage and degrades performance
++; under memory pressure - use with care.
++; Requires appropriate OS configuration.
++;opcache.huge_code_pages=0
+ 
+ ; Validate cached file permissions.
+ ;opcache.validate_permission=0
+

@@ -1,0 +1,19 @@
+--- mpm_prefork.conf	2024-05-11 07:32:54.883575077 +0700
++++ /etc/apache2/mods-enabled/mpm_prefork.conf	2024-05-08 00:10:49.469004558 +0700
+@@ -6,11 +6,11 @@
+ # MaxConnectionsPerChild: maximum number of requests a server process serves
+ 
+ <IfModule mpm_prefork_module>
+-	StartServers			 5
+-	MinSpareServers		  5
+-	MaxSpareServers		 10
+-	MaxRequestWorkers	  150
+-	MaxConnectionsPerChild   0
++	StartServers	        5
++	MinSpareServers	        3
++	MaxSpareServers	        10
++	MaxRequestWorkers       25
++	MaxConnectionsPerChild  2000
+ </IfModule>
+ 
+ # vim: syntax=apache ts=4 sw=4 sts=4 sr noet

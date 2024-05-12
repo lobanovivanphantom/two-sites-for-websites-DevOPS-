@@ -390,7 +390,7 @@
 
 - Создаем символьную ссылку вирт.хоста в sites-enabled
 
->> ln -s /etc/nginx/sites-available/DOMAIN_NAME /etc/nginx/sites-enabled/site.ru
+>> ln -s /etc/nginx/sites-available/site.ru /etc/nginx/sites-enabled/site.ru
 
 - Тестируем конфиг на лексические ошибки
 
@@ -435,11 +435,108 @@
 
 - Я на всякий случай перезапустил сервисы apache2 и nginx
 
-- Любуемся нашим CMS Битриксом. Nginx спроксировал запрос на Apache2
+- Любуемся нашим CMS Битриксом. Nginx спроксировал запрос на Apache2. Можно установить демонстрационную версию Битрикс. Но при загрузке до конца не скачивается и виснет на 78 процентах
 
 ![mysql4](screenshots/bitrix1.png)
 
-## 6.5. 
+
+### 6.5. Настраиваем площадку под второй сайт site-2.ru на nginx+php-fpm
+
+- создаём группу пользователей
+
+>> groupadd -g 10003 site-2.ru
+
+- cоздаем нового пользователя
+
+>> useradd -g 10003 -u 10003 -s /bin/bash -d /var/www/site-2.ru site-2.ru
+
+- Создаем каталог площадки.
+
+>> mkdir -p /var/www/site-2.ru
+
+- Переходим в эту директорию и создаем каталог для файлов сайта
+
+>> cd /var/www/site-2.ru
+
+>> mkdir data
+
+- Создаем каталоги для временных файлов, логов, сессий
+
+>> mkdir log sess tmp upload log/nginx
+
+- Присвоим площадке владельца
+
+>> chown -R site-2.ru: /var/www/site-2.ru
+
+- Дадим права
+
+>> chmod 751 /var/www/site-2.ru
+
+>> chmod -R o-rwx /var/www/site-2.ru/*
+
+>> chmod o+x data log log/nginx
+
+- Создаем файл конфигурации виртуального хоста Nginx
+
+>> touch /etc/nginx/sites-available/site-2.ru
+
+- Заполняем его
+
+![mysql4](screenshots/nginx_site-2.png)
+
+- Создаем символьную ссылку вирт.хоста в sites-enabled
+
+>> ln -s /etc/nginx/sites-available/site-2.ru /etc/nginx/sites-enabled/site-2.ru
+
+- Тестируем конфиг на лексические ошибки
+
+>> nginx -t
+
+- Перечитаем конфигурацию nginx
+
+>> service nginx reload
+
+- Проверяем статус службы nginx
+
+>> service nginx status
+
+### 6.6. Предусмотреть возможность переключения между версиями PHP через разные пулы fpm
+
+- ставим новую версию PHP-7.4
+
+>> apt install php7.4-fpm
+
+- проверяем символическую ссылку на сокет
+
+>> ls -l /etc/alternatives/php-fpm.sock
+
+![mysql4](screenshots/symlink1.png)
+
+- открываем в браузере site-2
+
+![mysql4](screenshots/symlink2.png)
+
+- удаляем старую ссылку, делаем новую ссылку на новую версию PHP-fpm7.4. Проверяем её и перезапускаем nginx
+
+![mysql4](screenshots/symlink3.png)
+
+- проверяем в браузере смену версии PHP-fpm
+
+![mysql4](screenshots/symlink4.png)
+
+- Была попытка сделать смену версии через новую переменную окружения и bash-скрипт со сменой версии PHP-fpm. Но в результате конфиг файл nginx не взлетел. Отложил идею в ящик.
+
+### 6.7. Установить на площадке любой файловый менеджер на PHP для тестирования загрузки/удаления файлов. На этом я заглючил!
+
+
+
+
+
+
+
+
+
+
 
 
 
